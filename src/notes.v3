@@ -1,0 +1,33 @@
+// this is looping through the "frames"
+iVar2 = IMP_Encoder_GetStream(*(undefined4 *)(iVar1 + 0x14),&local_30,1);
+
+local 30 points to stream
+local _20 is count
+
+iVar2 is total length
+iVar5 is index 
+
+  undefined4 local_30;
+  undefined4 local_2c;
+  undefined4 local_28;
+  int local_24;
+  int local_20;
+  undefined4 local_1c;
+
+
+typedef struct {
+	40 int *p0;
+	3c IMPEncoderPack  *pack;
+	38 int *p1;
+	34 *p2;
+	30 int packCount;
+	2c seq;
+	int i0;
+
+iVar5 = 0;
+          iVar2 = 0;
+          do {
+            iVar3 = iVar5 * 0x20; // 0x20 sizeof IMPEncoderPack
+            iVar5 = iVar5 + 1;
+            iVar2 = iVar2 + *(int *)(local_24 + iVar3 + 4); // offset of length is 4
+          } while (iVar5 != local_20);

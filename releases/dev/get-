@@ -1,0 +1,37 @@
+#!/bin/sh -x
+
+cd /configs
+
+rm -rf stream_hack
+mkdir stream_hack
+wget www.sonic.net/~crb/imp.so
+mv imp.so stream_hack/libimp.so
+
+insert='export LD_LIBRARY_PATH=/configs/stream_hack:$LD_LIBRARY_PATH'
+
+edit() {
+        f=$1
+        echo editing $f
+        cp $f /tmp
+        tmp=/tmp/stream_hack.tmp
+        n=$(cat $f | wc -l)
+        head -1 $f > $tmp
+        echo $insert >> $tmp
+        tail -n $(($n - 1)) $f >> $tmp
+        mv $tmp $f
+        chmod +x $f
+}
+
+if [ -w wyze_hack.sh ]; then
+        if ! grep stream_hack wzye_hack.sh ; then
+                edit wyze_hack.sh
+        fi
+fi
+
+cd /system/init
+if [ -w app_init.sh ]; then
+        if ! grep stream_hack app_init.sh ; then
+                edit app_init.sh
+        fi
+fi
+
