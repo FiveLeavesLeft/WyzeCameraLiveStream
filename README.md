@@ -1,13 +1,4 @@
 
-# Wyze Cam Live Streaming 
-
-This is a hack to allow live streaming from a wyze cam on your local network.
-
-# Installation 
-
-Installation currenty requires telnet on the camera. V3 cameras
-require wyze_hacks installed. ( Write more about this. )
-
 	telnet <your cam ip>
 	
 Once on your camera:
