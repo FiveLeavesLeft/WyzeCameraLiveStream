@@ -8,20 +8,26 @@ OBJDUMP = $(BIN)/$(PRE)-objdump
 CFLAGS = -muclibc -EL -fPIC -nostartfiles
 LDFLAGS = -EL -shared
 
-DST	= ../releases/dev
+DST	= ../releases/current
+DST2	= ../releases/dev
+VER	= current
 
 # IMP_ documentation
 # https://jmichault.github.io/ipcam-100-dok/en/
 
 it:
 	$(CC) $(CFLAGS) -c tcp.c
-	$(CC) $(CFLAGS) -c udp.c
+	$(CC) $(CFLAGS) -c p2p.c
 	$(CC) $(CFLAGS) -c common.c
-	$(LD) $(LDFLAGS) -o libimp.so tcp.o udp.o common.o
-	mv libimp.so $(DST)
-	cp get $(DST)
-	chmod +x $(DST)/get
-	ls $(DST)
+	$(LD) $(LDFLAGS) -o libimp.so tcp.o p2p.o common.o
+	cp install.sh uninstall.sh libimp.so $(DST)
+	cp install.sh uninstall.sh libimp.so $(DST2)
+	scp install.sh uninstall.sh libimp.so crb@shell.sonic.net:www/$(VER)
+
+xx:
+	#~/bin/gh --help
+	#~/bin/gh release --help
+	~/bin/gh release create
 
 min:
 	$(CC) $(CFLAGS) -fPIC -nostartfiles -c min.c

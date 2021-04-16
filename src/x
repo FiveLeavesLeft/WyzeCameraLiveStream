@@ -1,0 +1,71 @@
+~/bin/gh --help
+Work seamlessly with GitHub from the command line.
+
+USAGE
+  gh <command> <subcommand> [flags]
+
+CORE COMMANDS
+  gist:       Manage gists
+  issue:      Manage issues
+  pr:         Manage pull requests
+  release:    Manage GitHub releases
+  repo:       Create, clone, fork, and view repositories
+
+ACTIONS COMMANDS
+  actions:    Learn about working with GitHub actions
+  run:        View details about workflow runs
+  workflow:   View details about GitHub Actions workflows
+
+ADDITIONAL COMMANDS
+  alias:      Create command shortcuts
+  api:        Make an authenticated GitHub API request
+  auth:       Login, logout, and refresh your authentication
+  completion: Generate shell completion scripts
+  config:     Manage configuration for gh
+  help:       Help about any command
+  secret:     Manage GitHub secrets
+  ssh-key:    Manage SSH keys
+
+FLAGS
+  --help      Show help for command
+  --version   Show gh version
+
+EXAMPLES
+  $ gh issue create
+  $ gh repo clone cli/cli
+  $ gh pr checkout 321
+
+ENVIRONMENT VARIABLES
+  See 'gh help environment' for the list of supported environment variables.
+
+LEARN MORE
+  Use 'gh <command> <subcommand> --help' for more information about a command.
+  Read the manual at https://cli.github.com/manual
+
+FEEDBACK
+  Open an issue using 'gh issue create -R github.com/cli/cli'
+
+~/bin/gh release --help
+Manage GitHub releases
+
+USAGE
+  gh release <command> [flags]
+
+CORE COMMANDS
+  create:     Create a new release
+  delete:     Delete a release
+  download:   Download release assets
+  list:       List releases in a repository
+  upload:     Upload assets to a release
+  view:       View information about a release
+
+FLAGS
+  -R, --repo [HOST/]OWNER/REPO   Select another repository using the [HOST/]OWNER/REPO format
+
+INHERITED FLAGS
+  --help   Show help for command
+
+LEARN MORE
+  Use 'gh <command> <subcommand> --help' for more information about a command.
+  Read the manual at https://cli.github.com/manual
+

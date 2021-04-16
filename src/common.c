@@ -3,13 +3,13 @@
 #define LIB "/system/lib/libimp.so"
 
 static void *sym = 0;
-static struct sockaddr_in *udp_addr = 0;
+static struct sockaddr_in *p2p_addr = 0;
 //static int app_version[4] = {0,0,0,0};
 static int V3 = 0;
 
 static int my_write(int fd, void *buf, unsigned n) {
 	//static char nal[4] = { 0,0,0,1 };
-    if(udp_addr == 0) {
+    if(p2p_addr == 0) {
 		/*
 		char *p = (char *)buf;
 		int nal_type = p[4] & 0x1f;
@@ -20,7 +20,7 @@ static int my_write(int fd, void *buf, unsigned n) {
 		*/
        return write(fd, buf, n);
     }
-	return crb_udp_send_frame(fd, buf, n, udp_addr);
+	return crb_p2p_send_frame(fd, buf, n, p2p_addr);
 }
 
 static int crb_write_h264_v2(int fd, IMPEncoderStream *stream) {
@@ -154,14 +154,14 @@ public void _init(void) {
 }
 
 public int crb_write_h264(int fd, struct sockaddr_in *addr, void *stream) {
-	udp_addr = addr;
+	p2p_addr = addr;
 	int err = 0;
 	if(V3) {
 		err = crb_write_h264_v3(fd, (int)stream);
 	} else {
 		err = crb_write_h264_v2(fd, (IMPEncoderStream *)stream);
 	}
-	udp_addr = 0;
+	p2p_addr = 0;
 	return err;
 }
 
@@ -174,27 +174,27 @@ static IMP_Log_Get_Gption_t get = 0;
 public int IMP_Encoder_GetStream(int encChn, IMPEncoderStream *stream, int blockFlag) {
 	typedef int (*IMP_Encoder_GetStream_t)(int,IMPEncoderStream*,int);
 	static IMP_Encoder_GetStream_t func = 0;
-	static int udp = 0;
+	static int p2p = 0;
 	if(sym && func == 0) {
-		struct stat x;
 		func = dlsym(sym, "IMP_Encoder_GetStream");
 		print("func = %p", func);
 		get_app_version();
-		udp = lstat("/configs/stream_hack/udp", &x) == 0;
-		print("running %s option", udp ? "udp" : "tcp");
-		print("running %s option", V3 ? "V3" : "V2");
+		char *env = getenv("STREAM_HACK_P2P");
+		p2p = (env && *env);
+		print("running %s option", p2p ? "p2p" : "local");
+		print("running %s option", V3  ? "V3"  : "V2");
 	    //set = dlsym(sym, "IMP_Log_Set_Option");
 	    //get = dlsym(sym, "IMP_Log_Get_Option");
-		print("get = %p", get);
-		print("set = %p", set);
+		//print("get = %p", get);
+		//print("set = %p", set);
 	}
 	if(func) {
 		int rval = (func)(encChn,stream,blockFlag);
 		if(rval == 0) {
 			//dump_stats(stream);
 		}
-		if(udp) {
-			crb_udp_hook(rval, encChn, (void *)stream);
+		if(p2p) {
+			crb_p2p_hook(rval, encChn, (void *)stream);
 		} else {
 			crb_tcp_hook(rval, encChn, (void *)stream);
 		}
@@ -206,20 +206,20 @@ public int IMP_Encoder_GetStream(int encChn, IMPEncoderStream *stream, int block
 
 public FILE *crb_file() {
 	static FILE *file = 0;
-	if(file == 0) {
-	    struct stat x;
-		char *path = "/configs/stream_hack/log";
-		if(lstat(path, &x) == 0) {
-		    file = fopen(path, "w");
-			if(file == 0) {
-			    file = stdout;
-		    }
-		} else {
+	static int init = 0;
+	if(init == 0) {
+		init = 1;
+		char *path = getenv("STREAM_HACK_OUTPUT");
+		if(path == 0 || *path == 0) {
+			printf("CRB: No logging.\n");
+			return 0;
+		}
+		if((file = fopen(path, "w")) == 0) {
 			file = stdout;
 		}
 		printf("CRB: logging to %s\n", file == stdout ? "stdout" : path);
+		//setbuf(file, 0);
     }
-	//setbuf(file, 0);
 	return file;
 }
 

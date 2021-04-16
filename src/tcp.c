@@ -8,20 +8,10 @@
 
 static int server_fd = 0;
 static int client_fd = 0;
-static int client_write = 0;
 static int client_channel = 0;
 static int server_stop = 0;
 static int client_stop = 0;
 static pthread_t thread;
-
-static int jpg(int chan) {
-	extern int local_sdk_video_get_jpeg(int, char *);
-	char *p = "/tmp/x.jpg";
-	print("Try jpg %d", chan);
-	int err = local_sdk_video_get_jpeg(chan,p);
-	print("err=%d", err);
-	return err;
-}
 
 static int fd_has_data(int fd) {
 	fd_set readfds;
@@ -77,12 +67,8 @@ static int client_puts(int fd, char *s) {
 	return client_send(fd, s, strlen(s));
 }
 
-static int do_client(int fd, char *_host) {
-	char host[64];
+static int do_client(int fd, char *host) {
 	char buf[64];
-	int port, n;
-	strncpy(host, _host, sizeof(host));
-	client_write = 0;
 	client_stop = 0;
 	while(client_stop == 0) {
 		bzero(buf, sizeof(buf));
@@ -91,30 +77,13 @@ static int do_client(int fd, char *_host) {
 				break;
 		}
 		print("Client said: '%s'", buf);
-		/*
-		if(strstr(buf, ":")) {
-			if(client_fd == 0) {
-				client_puts(fd, "HTTP/1.1 200 OK\r\n");
-				client_puts(fd, "\r\n");
-			}
-			client_fd = fd;
-		} else */ if(strncmp(buf, "GET", 3) == 0) {
+		if(strncmp(buf, "GET", 3) == 0) {
 			if(strstr(buf, " / ")) {
 				if(client_fd == 0) {
 					client_puts(fd, "HTTP/1.1 200 OK\r\n");
 					client_puts(fd, "\r\n");
 				}
 				client_fd = fd;
-			} else if(strstr(buf, " /0 ")) {
-				jpg(0);
-			} else if(strstr(buf, " /1 ")) {
-				jpg(1);
-			} else if(strstr(buf, " /2 ")) {
-				jpg(2);
-			} else if(strstr(buf, " /3 ")) {
-				jpg(3);
-			} else if(strstr(buf, " /4 ")) {
-				jpg(4);
 			}
 		}
 	}
@@ -130,18 +99,26 @@ static void *server_thread(void *arg) {
 	struct sockaddr_in cli;
 	socklen_t slen = (socklen_t)sizeof(cli);
 
-	print("Server listening..");
 	server_stop = 0;
+	print("Waiting...");
 	while(server_stop == 0) {
-        print("Waiting...");
-		while(fd_has_data(server_fd) == 0);
+		int ready = fd_has_data(server_fd);
+		if(ready == 0) {
+				continue;
+		}
+		if(ready < 0) {
+			print("select failed");
+			continue; // break, stop?
+		}
+		if(server_stop) {
+				break;
+		}
         print("Accept...");
         int connfd = accept(server_fd, (SA*)&cli, &slen);
         if (connfd < 0) {
             print("server acccept failed...");
 			continue;
 		}
-	    //print("New client...");
 		char *host = inet_ntoa(cli.sin_addr);
 	    print("New client: %s", host);
 		do_client(connfd, host);
@@ -151,6 +128,7 @@ static void *server_thread(void *arg) {
 			client_fd = 0;
 		}
 		close(connfd);
+        print("Waiting...");
 	}
 	return 0;
 }
@@ -162,14 +140,20 @@ static int start_server() {
     int sockfd, len;
     struct sockaddr_in servaddr;
 
-	print("Start server on port %d", MY_PORT);
+    int port = MY_PORT;
+    char *env = getenv("STREAM_HACK_PORT");
+    if(env && *env) {
+		if(sscanf(env, "%d", &port) != 1) {
+			print("sscanf failed on %s", env);
+		}
+	}
+	print("Start server on port %d", port);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
         print("socket creation failed...");
 		return -1;
 	}
 
-	//print("Socket successfully created..");
     int enable = 1;
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR,
             &enable, sizeof(int)) < 0) {
@@ -181,14 +165,13 @@ static int start_server() {
 
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(MY_PORT);
+    servaddr.sin_port = htons(port);
 
     if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) {
         print("socket bind failed...");
 		close(sockfd);
 		return -1;
     }
-	//#print("Socket successfully binded..");
 
     if ((listen(sockfd, 5)) != 0) {
         print("Listen failed...");
@@ -201,6 +184,7 @@ static int start_server() {
 	return 0;
 }
 
+/*
 static void thread_hack() {
 	static int n = 0;
 	static void *threads[4];
@@ -223,6 +207,7 @@ static void thread_hack() {
 		print("More than 4 threads");
     }
 }
+*/
 
 public int crb_tcp_hook(int rval, int chan, void *stream) {
 	start_server();

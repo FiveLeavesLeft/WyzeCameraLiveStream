@@ -34,9 +34,7 @@ if [ -z "$STREAM_HACK_VERSION" ]; then
         STREAM_HACK_VERSION=current
 fi
 if [ -z "$STREAM_HACK_LIB" ]; then
-        #STREAM_HACK_LIB="crb.users.sonic.net/$STREAM_HACK_VERSION/libimp.so"
-	STREAM_HACK_LIB="github.com/FiveLeavesLeft/repo/raw/main/releases/current/libimp.so"
-
+        STREAM_HACK_LIB="crb.users.sonic.net/$STREAM_HACK_VERSION/libimp.so"
 fi
 
 dir=/configs/stream_hack
