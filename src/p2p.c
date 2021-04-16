@@ -2,8 +2,8 @@
 
 //#include "json-c/json.h"
 
-#define SERVER_ADDR	"165.232.153.160"
-#define SERVER_PORT	5005
+static char *SERVER_ADDR = "165.232.153.160";
+static int SERVER_PORT	= 5005;
 #define MY_PORT		5005
 
 #define PING_PERIOD	10
@@ -344,15 +344,17 @@ static int p2p_work() {
 		p2p_action(fd, &state, buf, sizeof(buf));
     } else while(can_read(fd)) {
         req_t req;
-        //print("read");
+        print("read");
 		nread++;
         if(p2p_recv(fd, buf, sizeof(buf), &req) == 0) {
             if(req.cmd == PING) {
 				// ping is from server
                 // already marked in alive
+				print("ping");
                 p2p_send(fd, "pong", buf, sizeof(buf), &req.frm);
             } else if(req.cmd == PONG) {
 				// pong is from server
+				print("pong");
                 if(_snprintf(buf, sizeof(buf), "%s:%d",
                         addr_ip(&req.pub), addr_port(&req.pub))) {
                     return -1;
@@ -370,12 +372,14 @@ static int p2p_work() {
             } else if(req.cmd == PUNCH) {
 				// from server
                 // not really alive but used to search for TIMEOUT seconds
+				print("punch");
                 mark_alive(req.pub); // overloading TIMOUT
                 mark_alive(req.pri);
                 state = req;
             } else if(req.cmd == PLAY) {
 				// from client
-				//print("Got PLAY!");
+				print("play");
+				print("Got PLAY!");
                 state = req;
             } else {
                 print("Unknown cmd %d", req.cmd);
@@ -477,6 +481,24 @@ public int crb_p2p_send_frame(int fd, char *buf, int n, struct sockaddr_in *addr
     }
     seq++;
     return n;
+}
+
+public int crb_p2p_init() {
+	static char host[32];
+	char *env = getenv("STREAM_HACK_P2P");
+	if(env) {
+		strcpy(host, env);
+		SERVER_ADDR = host;
+		char *p = strstr(host, ":");
+		if(p == 0) {
+				return -1;
+		}
+		*p++ = 0;
+		if(sscanf(p, "%d", &SERVER_PORT) != 1) {
+				return -1;
+		}
+	}
+	return 0;
 }
 
 public int crb_p2p_hook(int rval, int chan, void *stream) {

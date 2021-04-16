@@ -180,7 +180,11 @@ public int IMP_Encoder_GetStream(int encChn, IMPEncoderStream *stream, int block
 		print("func = %p", func);
 		get_app_version();
 		char *env = getenv("STREAM_HACK_P2P");
-		p2p = (env && *env);
+		if(env && crb_p2p_init() == 0) {
+			p2p = 1;
+		} else {
+			crb_tcp_init();
+	       	}	
 		print("running %s option", p2p ? "p2p" : "local");
 		print("running %s option", V3  ? "V3"  : "V2");
 	    //set = dlsym(sym, "IMP_Log_Set_Option");

@@ -1,0 +1,18 @@
+    if(fd == 0) {
+        print("open");
+		strcpy(my_pri, "0.0.0.0");
+        fd = socket(AF_INET, SOCK_DGRAM, 0);
+        if(fd <= 0) {
+            print("socket error");
+            perror("socket");
+            return -1;
+        }
+        fill_addr(&server_addr, SERVER_ADDR, SERVER_PORT);
+        fill_addr(&bind_addr, (char *)0, MY_PORT);
+        if(bind(fd, (struct sockaddr *) &bind_addr, sizeof(bind_addr))) {
+            print("bind error");
+            perror("bind");
+            return -1;
+        }
+		client_fd = fd;
+    }

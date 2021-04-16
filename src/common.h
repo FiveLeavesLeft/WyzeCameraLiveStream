@@ -24,6 +24,8 @@
 #include "imp/imp_encoder.h"
 
 #define public /* nothing */
+public int crb_p2p_init();
+public int crb_tcp_init();
 public int crb_p2p_hook(int, int, void *);
 public int crb_tcp_hook(int, int, void *);
 public int crb_write_h264(int fd, struct sockaddr_in *addr, void *stream);

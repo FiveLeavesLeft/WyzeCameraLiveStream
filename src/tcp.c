@@ -133,7 +133,7 @@ static void *server_thread(void *arg) {
 	return 0;
 }
 
-static int start_server() {
+public int crb_tcp_init() {
 	if(server_fd) {
 		return server_fd;
 	}
@@ -210,7 +210,6 @@ static void thread_hack() {
 */
 
 public int crb_tcp_hook(int rval, int chan, void *stream) {
-	start_server();
 	if(client_fd && chan == client_channel && rval == 0) {
 		int err = crb_write_h264(client_fd, 0, stream);
 		//thread_hack();
