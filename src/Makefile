@@ -10,6 +10,7 @@ LDFLAGS = -EL -shared
 
 DST	= ../releases/current
 DST2	= ../releases/dev
+DST3	= ../releases/0.0.01
 VER	= current
 
 # IMP_ documentation
@@ -22,7 +23,9 @@ it:
 	$(LD) $(LDFLAGS) -o libimp.so tcp.o p2p.o common.o
 	cp install.sh uninstall.sh libimp.so $(DST)
 	cp install.sh uninstall.sh libimp.so $(DST2)
+	cp install.sh uninstall.sh libimp.so $(DST3)
 	scp install.sh uninstall.sh libimp.so crb@shell.sonic.net:www/$(VER)
+	rm *.o libimp.so
 
 xx:
 	#~/bin/gh --help
