@@ -10,8 +10,8 @@ Download and installation information:
 
 	https://github.com/HclX/WyzeHacks#download-and-installation
 
-For V3 cameras, WyzeHacks currently requires firmware 4.36.0.228, to be
-installed on your camera.
+For V3 cameras, WyzeHacks currently requires firmware 4.36.0.228 or later, 
+to be installed on your camera.
 
 As of this writing, the current version of WyzeHacks is .0.0.5 and these
 commands worked for me:

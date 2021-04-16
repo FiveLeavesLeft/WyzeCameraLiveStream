@@ -23,7 +23,6 @@ And once on your camera:
 
 	cd /configs
 	wget crb.users.sonic.net/current/install.sh
-	wget github.com/FiveLeavesLeft/repo/raw/main/releases/current/install.sh
 	chmod +x install.sh
 	./install.sh
 
@@ -48,6 +47,10 @@ Telnet to your camera and:
 	chmod +x uninstall.sh
 	./uninstall.sh
 
+# Why is it installed from sonic.net and not github?
+
+The version of wget on the camera does not support https.
+
 # Known issues
 
 There have been some reports of wyze events not being uploaded to the
@@ -60,9 +63,9 @@ and see if the event gets uploaded to the cloud.
 
 The hack modifies LD_LIBRARY_PATH and provides an alternative libimp.so.
 
-On V2 cameras, 'install.sh' wraps /system/init/app_init.sh 
+On V2 cameras, install.sh wraps /system/init/app_init.sh 
 
-On V3 cameras, 'install.sh' wraps /configs/wyze_hack.sh
+On V3 cameras, install.sh wraps /configs/wyze_hack.sh
 
-'install.sh' creates the directory /configs/stream_hack and puts the
+install.sh creates the directory /configs/stream_hack and puts the
 alternative vesion of libimp.so there.

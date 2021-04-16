@@ -4,7 +4,7 @@
 
 #define SA struct sockaddr 
 
-#define MY_PORT 12235
+#define MY_PORT 12345
 
 static int server_fd = 0;
 static int client_fd = 0;
