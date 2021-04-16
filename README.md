@@ -1,8 +1,4 @@
 
-# UNDER CONSTRUCTION
-
-This repo is under construction and not ready for use yet.
-
 # Wyze Cam Live Streaming 
 
 This is a hack to allow live streaming from a wyze cam on your local
@@ -12,14 +8,13 @@ network.
 
 Installation currenty requires telnet on the camera. V3 cameras The
 WyzeHacks github repository will let you install telnet. For details
-see this page.
+see Telnet.md in this directory.
 
 Then telnet to your camera:
 
 	telnet <your cam ip>
 	
 And once on your camera:
-
 
 	cd /configs
 	wget crb.users.sonic.net/current/install.sh
