@@ -23,19 +23,3 @@ or
 	( on MacOs alias vlc='/Applications/VLC.app/Contents/MacOS/VLC' )
 
 
-# How it works:
-
-The hack modifies LD_LIBRARY_PATH and provides an alternative libimp.so.
-
-On V2 cameras, 'get' wraps /system/init/app_init.sh 
-
-On V3 cameras, 'get' wraps /configs/wyze_hack.sh
-
-Both versions 'get' creates the directory /configs/stream_hack and puts the
-alternative vesion of libimp.so there.
-
-crb@sonic.net
-Fri Apr  9 20:36:13 UTC 2021 
-
-Tested on Wyze V2 with firmware 4.9.6.241 and VLC 3.0.10.
-# repo
