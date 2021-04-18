@@ -6,11 +6,11 @@ network.
 
 # Installation 
 
-Installation currenty requires telnet on the camera. V3 cameras The
+Installation currenty requires telnet on the camera. The
 WyzeHacks github repository will let you install telnet. For details
 see Telnet.md in this directory.
 
-Then telnet to your camera:
+Telnet to your camera, login in as root, the password is probably ismart12.
 
 	telnet <your cam ip>
 	
@@ -64,3 +64,13 @@ On V3 cameras, install.sh wraps /configs/wyze_hack.sh
 
 install.sh creates the directory /configs/stream_hack and puts the
 alternative vesion of libimp.so there.
+
+# Toolchain
+
+The toolchain I used is:
+
+<https://sourcery.sw.siemens.com/GNUToolchain/release3217>
+
+Documentation is here:
+
+<https://sourcery.sw.siemens.com/GNUToolchain/doc23862/getting-started.pdf>

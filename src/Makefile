@@ -31,6 +31,11 @@ current:
 	make dev
 	scp install.sh uninstall.sh libimp.so crb@shell.sonic.net:www/current
 
+push:
+	git add ..
+	git commit -m "updates"
+	git push origin main
+
 dist:
 	(cd ../..; tar cvf repo.tar repo; scp repo.tar crb@192.168.0.105:)
 
