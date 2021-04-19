@@ -21,9 +21,9 @@ dev:
 	$(CC) $(CFLAGS) -c p2p.c
 	$(CC) $(CFLAGS) -c common.c
 	$(LD) $(LDFLAGS) -o libimp.so tcp.o p2p.o common.o
-	cp install.sh uninstall.sh libimp.so $(DST)
-	cp install.sh uninstall.sh libimp.so $(DST2)
-	cp install.sh uninstall.sh libimp.so $(DST3)
+	#cp install.sh uninstall.sh libimp.so $(DST)
+	#cp install.sh uninstall.sh libimp.so $(DST2)
+	#cp install.sh uninstall.sh libimp.so $(DST3)
 	scp install.sh uninstall.sh libimp.so crb@shell.sonic.net:www/dev
 	#rm *.o libimp.so
 

@@ -19,7 +19,7 @@
 # Uncomment this is if you want to get the dev version
 # STREAM_HACK_VERSION='dev'
 
-# Experimental: stream_hack over p2p
+# Experimental: stream_hack for non-local camaers using udp hole punching
 #STREAM_HACK_P2P='128.199.15.140:5005'
 
 # DO NOT EDIT BELOW THIS LINE.
