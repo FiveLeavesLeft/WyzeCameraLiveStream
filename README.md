@@ -4,7 +4,21 @@
 This is a hack to allow live streaming from a wyze cam on your local
 network.
 
-# Installation 
+# Installation - New!
+
+The simplest fix for wyze events not being detected was to integrate
+the stream hack into WyzeHacks so I forked WyzeHacks into 
+https://github.com/FiveLeavesLeft/WyzeHacks and also included the
+zip file here in this directory.
+
+To install, download the zip file and:
+
+	unzip wyze_hacks_0_5_06.zip
+	cp config.inc.TEMPLATE config.inc
+	./remote_install.sh
+
+
+# Installation - ( Old, no longer supported )
 
 Installation currenty requires telnet on the camera. The
 WyzeHacks github repository will let you install telnet. For details
