@@ -17,6 +17,109 @@ To install, download the zip file and:
 	cp config.inc.TEMPLATE config.inc
 	./remote_install.sh
 
+# Third-Party Integration/Configuration
+
+## Homebridge/HOOBS
+
+Install the [Homebridge Camera FFmpeg](https://github.com/Sunoo/homebridge-camera-ffmpeg) plugin.
+
+Sample configuration:
+
+```json
+    {
+        "name": "CAM-NAME",
+        "manufacturer": "Wyze",
+        "model": "Cam v2",
+        "unbridge": true,
+        "videoConfig": {
+            "source": "-i http://CAM-IP:12345",
+            "stillImageSource": "-i http://CAM-IP:12345 -vframes 1 -r 1",
+            "vcodec": "copy",
+            "maxStreams": 1,
+            "audio": false,
+            "packetSize": 188
+        }
+    }
+```
+[Source: @mrlt8](https://github.com/FiveLeavesLeft/WyzeCameraLiveStream/issues/5#issuecomment-831626312)
+
+### Enable Motion in Homebridge
+- Configure **HTTP Port** in **Camera FFMPEG**
+- Set `"motion": true,` for your camera in **Camera FFMPEG**
+- Configure the following script and copy it to your camera (e.g. /media/mmc/scripts/motion.sh):
+
+```bash
+#!/bin/sh
+SLEEP=10
+BRIDGE=homebridge-ip:port
+CAMERA=camera-name-in-homebridge
+while : ; do
+    sleep $SLEEP                                       
+    [[ ! -f /tmp/*.jpg ]] && continue              
+     wget -q -O - "http://$BRIDGE/motion?$CAMERA"
+done 
+```
+You can auto start the script by calling it from `export CUSTOM_SCRIPT=` in `/configs/wyze_hack.cfg`
+
+[Source: @mrlt8](https://github.com/FiveLeavesLeft/WyzeCameraLiveStream/issues/5#issuecomment-850953208)
+
+---
+
+## Home Assistant
+
+Sample Configuration:
+
+```yaml
+wyzefront:
+    ffmpeg:
+      # hwaccel_args:
+      #   - -hwaccel
+      #   - vaapi
+      #   - -hwaccel_device
+      #   - /dev/dri/renderD128
+      #   - -hwaccel_output_format
+      #   - yuv420p
+      input_args:
+        - -avoid_negative_ts
+        - make_zero
+      inputs:
+        - path: http://x.x.x.x:12345
+          roles:
+            - detect
+            - clips
+            - rtmp
+    width: 1920
+    height: 1080
+    fps: 5
+    clips:
+      # Required: enables clips for the camera (default: shown below)
+      # This value can be set via MQTT and will be updated in startup based on retained value
+      enabled: True
+      # Optional: Number of seconds before the event to include in the clips (default: shown below)
+      pre_capture: 5
+      # Optional: Number of seconds after the event to include in the clips (default: shown below)
+      post_capture: 5
+      # Optional: Objects to save clips for. (default: all tracked objects)
+      objects:
+        - person
+```
+[Source: @romedtino](https://github.com/FiveLeavesLeft/WyzeCameraLiveStream/issues/5#issuecomment-832374049)
+
+
+---
+
+## Blue Iris 
+Sample Connfig:
+
+- Make: **Generic/ONVIF**
+- Model: **HTTP Live Streaming (HLS, M3U8), MP2TS**
+- Media/video/RTSP port: **12345**
+
+![config](https://camo.githubusercontent.com/15fe27c4b53d111eab5bb93c6eebfa2e5170cddf8cb7375cac3d4beea0686641/68747470733a2f2f696d6775722e636f6d2f326677563732702e706e67)
+
+[Source: @dudududodododedede](https://github.com/FiveLeavesLeft/WyzeCameraLiveStream/issues/9#issuecomment-835694551)
+
+---
 
 # Installation - ( Old, no longer supported )
 
