@@ -109,7 +109,7 @@ wyzefront:
 ---
 
 ## Blue Iris 
-Sample Connfig:
+Sample Configuration:
 
 - Make: **Generic/ONVIF**
 - Model: **HTTP Live Streaming (HLS, M3U8), MP2TS**
